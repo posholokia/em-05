@@ -8,7 +8,7 @@ from api.schema import (
     TradePeriodFilterSchema,
     TradeResultSchema,
 )
-from config.container import container
+from config.container import get_container
 from interfaces.repository.trading import ITradingRepository
 
 
@@ -21,7 +21,8 @@ router = APIRouter()
     description="Получение списка дат последних торгов.",
 )
 async def get_last_trading_dates(
-    limit: int = Query(default=100, ge=1)
+    limit: int = Query(default=100, ge=1),
+    container = Depends(get_container),
 ) -> TradeDateSchema:
     repository = container.resolve(ITradingRepository)
     date_list = await repository.get_last_dates(limit)
@@ -36,6 +37,7 @@ async def get_last_trading_dates(
 )
 async def get_dynamics(
     filter_: TradePeriodFilterSchema = Depends(),
+    container = Depends(get_container),
 ) -> list[TradeResultSchema]:
     repository = container.resolve(ITradingRepository)
     trade_results = await repository.get_list_for_period(
@@ -51,6 +53,7 @@ async def get_dynamics(
 )
 async def get_trading_results(
     filter_: TradeFilterSchema = Depends(),
+    container = Depends(get_container),
 ) -> list[TradeResultSchema]:
     repository = container.resolve(ITradingRepository)
     trade_results = await repository.get_list(

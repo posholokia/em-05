@@ -3,11 +3,12 @@ from datetime import datetime, UTC, timedelta, time
 from fastapi.requests import Request
 from fastapi.responses import Response
 
-from config.container import container
+from config.container import get_container
 from interfaces.cache.storage import ICacheStorage
 
 
 async def cache_response_middleware(request: Request, call_next):
+    container = get_container()
     cache: ICacheStorage = container.resolve(ICacheStorage)
     cache_key = str(request.url)
     cached_response = await cache.get_value(cache_key)

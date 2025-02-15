@@ -47,6 +47,3 @@ class DiContainer:
             password=settings.REDIS_PASS,
         )
         return self.container
-
-
-container = get_container()
